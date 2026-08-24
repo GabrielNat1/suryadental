@@ -1,4 +1,4 @@
-package br.com.suryadental.application.dto;
+package br.com.suryadental.application.dto.request;
 
-public class ClientDTO {
-}
+public record ClientRequestDTO()
+{}

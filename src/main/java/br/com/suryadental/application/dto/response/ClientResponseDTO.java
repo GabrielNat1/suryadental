@@ -1,4 +1,12 @@
 package br.com.suryadental.application.dto.response;
 
-public class ClientResponseDTO {
-}
+import java.util.UUID;
+
+public record ClientResponseDTO(
+        UUID id,
+        String name,
+        String lastName,
+        String address,
+        String phone
+)
+{}
