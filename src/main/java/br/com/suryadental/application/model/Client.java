@@ -1,19 +1,20 @@
 package br.com.suryadental.application.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.UUID;
 
-@Document
+@Data
+@Entity
+@Table(name = "clients")
 public class Client {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(unique = true)
+    private String clientCode;
+
     private String name;
-    private String lastName;
-    private String address;
-    private String phone;
-
-
 }
