@@ -1,6 +1,8 @@
 package br.com.suryadental.application.service;
 
-import br.com.suryadental.application.exception.ApiException;
+import br.com.suryadental.application.dto.request.ClientRequest;
+import br.com.suryadental.application.dto.response.ClientResponse;
+import br.com.suryadental.application.exception.ClientNotFoundException;
 import br.com.suryadental.application.model.Client;
 import br.com.suryadental.application.repository.ClientRepository;
 import org.springframework.stereotype.Service;
@@ -10,36 +12,58 @@ import java.util.UUID;
 
 @Service
 public class ClientService {
+
     private final ClientRepository clientRepository;
 
     public ClientService(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
 
-    public List<Client> findAll() {
-        return clientRepository.findAll();
+    public List<ClientResponse> findAll() {
+        return clientRepository.findAll()
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
-    public Client findById(UUID id) {
-        return clientRepository.findById(id)
-                .orElseThrow(() -> new ApiException("Client not found"));
+    public ClientResponse findById(UUID id) {
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException("Client not found"));
+
+        return toResponse(client);
     }
 
-    public Client save(Client client) {
-        return clientRepository.save(client);
+    public ClientResponse create(ClientRequest request) {
+        Client client = new Client();
+
+        client.setName(request.getName());
+        client.setClientCode(request.getClientCode());
+
+        return toResponse(clientRepository.save(client));
     }
 
-    public Client update(UUID id, Client client) {
-        Client existingClient = findById(id);
+    public ClientResponse update(UUID id, ClientRequest request) {
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException("Client not found"));
 
-        existingClient.setName(client.getName());
-        existingClient.setClientCode(client.getClientCode());
+        client.setName(request.getName());
+        client.setClientCode(request.getClientCode());
 
-        return clientRepository.save(existingClient);
+        return toResponse(clientRepository.save(client));
     }
 
     public void delete(UUID id) {
-        Client client = findById(id);
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException("Client not found"));
+
         clientRepository.delete(client);
+    }
+
+    private ClientResponse toResponse(Client client) {
+        return new ClientResponse(
+                client.getId(),
+                client.getName(),
+                client.getClientCode()
+        );
     }
 }

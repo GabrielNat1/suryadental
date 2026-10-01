@@ -24,6 +24,13 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ClientNotFoundException.class)
+    public ResponseEntity<?> handleClientNotFound(ClientNotFoundException ex){
+        return buildResponse(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage()
+        );
+    }
 
     private ResponseEntity<Map<String, Object>> buildResponse(
             HttpStatus status, String message) {
