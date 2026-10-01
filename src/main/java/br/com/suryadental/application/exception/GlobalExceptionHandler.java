@@ -32,6 +32,14 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(TicketNotFoundException.class)
+    public ResponseEntity<?> ticketNotFound(TicketNotFoundException ex){
+        return buildResponse(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage()
+        );
+    }
+
     private ResponseEntity<Map<String, Object>> buildResponse(
             HttpStatus status, String message) {
         Map<String, Object> body = new LinkedHashMap<>();
