@@ -8,28 +8,3 @@ The system is designed to centralize this information in a single platform, allo
 The main challenges considered during development include analyzing large volumes of tickets, having to access tickets individually to find specific information, and the lack of a consolidated view of the available data.
 
 The system is designed to provide a more organized structure for ticket management, customer lookup, data import, and key metric visualization, while serving as a foundation for future automation and integration with other systems
-> The repository does not contain any real data, credentials, or confidential information
-
-## Technologies
-> This repository is only the backend
-
-- Backend: Java and SpringBooot
-- Batabase: MongoDB
-- Build: Maven
-
-## Functionalities
-
-- Dashboard with key metrics
-- Ticket management
-- Customer lookup
-- Search and filtering
-- Data import
-- Ticket analsysis
-
-
-
-
-
-
-
-
