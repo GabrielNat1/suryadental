@@ -9,12 +9,15 @@ import br.com.suryadental.application.model.Client;
 import br.com.suryadental.application.model.Ticket;
 import br.com.suryadental.application.repository.ClientRepository;
 import br.com.suryadental.application.repository.TicketRepository;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TicketService {
+
     private final TicketRepository ticketRepository;
     private final ClientRepository clientRepository;
 
@@ -26,16 +29,17 @@ public class TicketService {
         this.clientRepository = clientRepository;
     }
 
-    public List<TicketResponse> findAll() {
-        return ticketRepository.findAll()
-                .stream()
-                .map(this::toResponse)
-                .toList();
+    @Transactional(readOnly = true)
+    public Page<TicketResponse> findAll(Pageable pageable) {
+        return ticketRepository.findAll(pageable)
+                .map(this::toResponse);
     }
 
+    @Transactional(readOnly = true)
     public TicketResponse findById(Long id) {
         Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
+                .orElseThrow(() ->
+                        new TicketNotFoundException("Ticket not found"));
 
         return toResponse(ticket);
     }
@@ -50,7 +54,8 @@ public class TicketService {
 
     public TicketResponse update(Long id, TicketRequest request) {
         Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
+                .orElseThrow(() ->
+                        new TicketNotFoundException("Ticket not found"));
 
         applyRequest(ticket, request);
 
@@ -59,7 +64,8 @@ public class TicketService {
 
     public void delete(Long id) {
         Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
+                .orElseThrow(() ->
+                        new TicketNotFoundException("Ticket not found"));
 
         ticketRepository.delete(ticket);
     }
@@ -72,7 +78,8 @@ public class TicketService {
 
         if (request.getClientId() != null) {
             Client client = clientRepository.findById(request.getClientId())
-                    .orElseThrow(() -> new ClientNotFoundException("Client not found"));
+                    .orElseThrow(() ->
+                            new ClientNotFoundException("Client not found"));
 
             ticket.setClient(client);
         } else {

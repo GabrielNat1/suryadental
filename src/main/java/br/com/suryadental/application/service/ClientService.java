@@ -8,9 +8,11 @@ import br.com.suryadental.application.repository.ClientRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,19 +27,22 @@ public class ClientService {
         this.clientRepository = clientRepository;
     }
 
-    public List<ClientResponse> findAll() {
-        logger.debug("Searching for all clients");
+    @Transactional(readOnly = true)
+    public Page<ClientResponse> findAll(Pageable pageable) {
+        logger.debug("Searching for clients, page: {}, size: {}",
+                pageable.getPageNumber(), pageable.getPageSize());
 
-        List<ClientResponse> clients = clientRepository.findAll()
-                .stream()
-                .map(this::toResponse)
-                .toList();
+        Page<ClientResponse> clients = clientRepository.findAll(pageable)
+                .map(this::toResponse);
 
-        logger.info("Successfully retrieved {} clients", clients.size());
+        logger.info("Successfully retrieved {} clients from {} total",
+                clients.getNumberOfElements(),
+                clients.getTotalElements());
 
         return clients;
     }
 
+    @Transactional(readOnly = true)
     public ClientResponse findById(UUID id) {
         logger.debug("Searching for client with ID: {}", id);
 
@@ -56,13 +61,13 @@ public class ClientService {
         logger.debug("Creating client with code: {}", request.getClientCode());
 
         Client client = new Client();
-
         client.setName(request.getName());
         client.setClientCode(request.getClientCode());
 
         Client savedClient = clientRepository.save(client);
 
-        logger.info("Client created successfully with ID: {}", savedClient.getId());
+        logger.info("Client created successfully with ID: {}",
+                savedClient.getId());
 
         return toResponse(savedClient);
     }

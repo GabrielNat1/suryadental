@@ -6,6 +6,9 @@ import br.com.suryadental.application.service.ClientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,8 +23,10 @@ public class ClientController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ClientResponse>> findAll() {
-        return ResponseEntity.ok(clientService.findAll());
+    public ResponseEntity<Page<ClientResponse>> findAll(
+            @PageableDefault(size = 10) Pageable pageable
+    ) {
+        return ResponseEntity.ok(clientService.findAll(pageable));
     }
 
     @GetMapping("/{id}")

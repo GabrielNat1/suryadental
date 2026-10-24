@@ -1,9 +1,13 @@
 package br.com.suryadental.application.dto.response;
 
-public record DashboardResponse(
-        long totalClients,
-        long totalTickets,
-        long openTickets,
-        long closedTickets
-) {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class DashboardResponse{
+        private long totalClients;
+        private long totalTickets;
+        private long openTickets;
+        private long closedTickets;
 }
